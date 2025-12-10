@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h2>수료증 발급</h2>
+
+  <form id="checkForm">
+    <input type="text" id="team" placeholder="팀명" required><br>
+    <input type="email" id="email" placeholder="대표 이메일" required><br>
+    <button type="submit">조회하기</button>
+  </form>
+
+  <p id="result"></p>
+
+<script>
+  document.getElementById("checkForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const res = await fetch("/api/verify", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        team: document.getElementById("team").value,
+        email: document.getElementById("email").value
+      })
+    });
+    const data = await res.json();
+    if(data.ok) {
+      window.location.href = `/api/certificate?id=${data.id}&team=${encodeURIComponent(data.team)}&member=${encodeURIComponent(data.member)}`;
+    } else {
+      document.getElementById("result").innerText = "수료 대상이 아닙니다.";
+    }
+  });
+</script>
+
+</body>
+</html>
